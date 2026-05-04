@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/todo-list.css}" >
+    <link rel="icon"  th:href="@{/assests/NexTak.png}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Todo | NxTask</title>
+</head>
+<body>
+
+<main>
+    <div class="create-task" id="create-task">
+        <div class="overlay"></div>
+        <div class="create-popup">
+            <header>
+                <h3>Add new Task</h3>
+                <div class="close-button" id="close-button"><i class="fa-solid fa-xmark"></i></div>
+            </header>
+            <div class="create-task-form">
+                <div class="time-filter">
+                    <div class="today-filter active" id="today-catogory">
+                        <i class="fa-solid fa-calendar-day">
+                        </i><p>DAY</p></div>
+                    <div class="week-filter" id="week-catogory"><i class="fa-solid fa-calendar-week"></i><p>THIS WEEK</p></div>
+                    <div class="month-filter" id="month-catogory"><i class="fa-solid fa-calendar"></i><p>THIS MONTH</p></div>
+                </div>
+                <form>
+                    <div class="task-inputs">
+                        <label for="title">Title <span>*(Only 50 character)</span></label>
+                        <input type="text" placeholder="Enter the title of the Task " id="title" name="title" maxlength="50">
+                    </div>
+                    <div class="task-inputs">
+                        <label for="description">Description <span>*</span></label>
+                        <textarea  rows="4" cols="50" placeholder="Describe the Task" id="description" , name="description"></textarea>
+                    </div>
+                    <div class="task-row">
+                        <div class="task-inputs">
+                            <label for="priority">Priority  <span>*</span></label>
+                            <select id="priority"  name="priority">
+                                <option><span class="indicator high"></span>HIGH</option>
+                                <option > <span  class="indicator medium"></span>MEDIUM</option>
+                                <option> <span  class="indicator low"></span>LOW</option>
+                            </select>
+
+                        </div>
+                        <div class="task-inputs">
+                            <label for="due-date">Due Date <span>*</span></label>
+                            <input type="date" id="due-date"  name="due-date">
+
+                        </div>
+                        <div class="task-inputs">
+                            <label for="time">Time <span>*</span></label>
+                            <input type="time" id="time" name="time">
+
+                        </div>
+
+                    </div>
+                </form>
+                <span>* Please fill in all required fields.</span>
+                <div class="create-buttons">
+                    <div>
+                        <button class="reset-button btn btn-negative" id="reset-button"><i class="fa-solid fa-arrow-rotate-left"></i>Reset</button>
+                        <button class="reset-button btn btn-negative" id="edit-button" disabled><i class="fa-solid fa-pen"></i>Edit</button>
+                    </div>
+
+                    <button class="create-button btn"  id="popup-submit"><i class="fa-solid fa-plus"></i>Add Task</button>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+    <nav>
+        <div><img th:src="@{/assests/NexTask Logo.svg}" alt="Logo" class="logo"></div>
+        <div class="user-logout">
+            <div class="user-profile"><img class="user-image" id="user-image" th:src="@{/assests/blank profile.webp}" alt=""></div>
+            <form th:action="@{/logout}" method="POST">
+                <button id="logout" type="submit" class="logout " onclick="logout()" >Logout</button>
+            </form>
+
+        </div>
+    </nav>
+<!--    <div id="loader">-->
+<!--        <div class="spinner"></div>-->
+<!--    </div>-->
+    <div class="info-section">
+
+        <div class="graphs">
+            <div class="graph">
+                <h3>Today’s Progress</h3>
+                <div class="donut" id="today-progress"
+                     th:style="'background: conic-gradient(#4CAF50 '
+               + ${data.progressData['todayProgress']} + '%, #e5e7eb 0%);'"
+                >
+                    <p class="percentage-donut" id="todays-precentage"
+                       th:text="${#numbers.formatDecimal(data.progressData['todayProgress'], 0, 0)}">
+
+                    </p></div>
+                <div class="text-donut">
+                    <div class="completed" ><p id="today-completed"></p><p>Completed</p></div>
+                    <div class="pending" ><p id="today-pending"></p><p>Pending</p></div>
+                </div>
+
+            </div>
+            <div class="graph">
+                <h3>This Week’s Progress</h3>
+                <div class="donut" id="week-progress"
+                     th:style="'background: conic-gradient(rgb(37, 99, 235) '
+               + ${data.progressData['weekProgress']} + '%, #e5e7eb 0%);'"
+                >
+
+
+
+
+                    <p class="percentage-donut" id="week-precentage"
+                       th:text="${#numbers.formatDecimal(data.progressData['weekProgress'], 0, 0)}"></p>
+                </div>
+                <div class="text-donut">
+                    <div class="completed week" ><p id="week-completed"></p><p>Completed</p></div>
+                    <div class="pending" ><p id="week-pending"></p><p>Pending</p></div>
+
+                </div>
+            </div>
+
+            <div class="graph">
+                <h3>This Month’s Progress</h3>
+                <div class="donut" id="month-progress"
+                     th:style="'background: conic-gradient(rgb(128, 0, 128) '
+               + ${data.progressData['monthProgress']} + '%, #e5e7eb 0%);'"
+                >
+
+                <p class="percentage-donut" id="month-precentage" th:text="${#numbers.formatDecimal(data.progressData['todayProgress'], 0, 0)}"></p></div>
+                <div class="text-donut">
+                    <div class="completed month"><p id="month-completed"></p><p>Completed</p></div>
+                    <div class="pending" ><p id="month-pending"></p><p>Pending</p></div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div class="calender-info">
+            <div class="calender-info-row-total">
+                <div class="total-task">
+                    <h3 id="total-task">50</h3>
+                </div>
+                <p>Total Task</p>
+            </div>
+            <div class="calender-info-row">
+                <div class="today-info"></div><p>Today</p>
+            </div>
+            <div class="calender-info-row">
+                <div class="selected-info"></div><p>Selected</p>
+            </div>
+
+        </div>
+
+<!--        <div class="calendar">-->
+<!--            <header class="calendar-header">-->
+<!--                <div id="prev" class="btn"><i class="fa-solid fa-arrow-left"></i></div>-->
+<!--                <div id="current" class="current">JULY 2024</div>-->
+<!--                <div id="next" class="btn"><i class="fa-solid fa-arrow-right"></i></div>-->
+<!--            </header>-->
+<!--            <div class="dates">-->
+<!--                <div class="weeks">-->
+<!--                    <div>S</div>-->
+<!--                    <div>M</div>-->
+<!--                    <div>T</div>-->
+<!--                    <div>W</div>-->
+<!--                    <div>TH</div>-->
+<!--                    <div>F</div>-->
+<!--                    <div>S</div>-->
+
+<!--                </div>-->
+<!--                <div class="day" id="day">-->
+
+<!--                </div>-->
+<!--            </div>-->
+
+<!--        </div>-->
+    </div>
+
+
+    <div class="todo-section">
+
+
+
+
+
+
+
+        <header class="todo-header">
+            <div>
+                <i class="fa-solid fa-table-list"></i>
+                <h2>To Do List</h2>
+            </div>
+
+            <div>
+                <button class="btn" onclick="openAddTaskPopUp()">+ Add Task</button>
+            </div>
+
+        </header>
+        <div class="todo-main">
+
+
+
+
+            <div class="todo-today todolist">
+                <header>
+                    <div class="today-details">
+                        <div class="todo-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                        <h3>Today</h3>
+                        <div class="todo-header-date"><p id="current-day"></p></div>
+
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-complete" id="task-progress-today"></div>
+                    </div>
+                </header>
+
+
+                <div class="todo-all-list" id="todo-list-today">
+                    <div class="todo-card"
+                         th:each="task : ${data.todayTask}"
+                         th:id="${task.id}"
+                         th:classappend="${task.status.name() == 'COMPLETED'} ? 'checked'">
+
+                        <!-- Checkbox -->
+                        <div class="check-box-div">
+                            <input type="checkbox"
+                                   th:attr="data-id=${task.id}"
+                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                        </div>
+
+                        <!-- Task Info -->
+                        <div class="todo-info-div">
+                            <p th:text="${task.title}"></p>
+                            <p th:text="${#temporals.format(task.dueDate, 'dd MMM yyyy HH:mm')}"></p>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="priority-div">
+                            <div class="priority"
+                                 th:classappend="${task.priority.name().toLowerCase()}">
+                                <p th:text="${task.priority.name()}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div class="delete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="todo-week todolist">
+                <header>
+                    <div class="today-details">
+                        <div class="todo-icon"><i class="fa-solid fa-calendar-week"></i></i></div>
+                        <h3>This week</h3>
+                        <div class="todo-header-date"><p id="current-week"></p></div>
+                    </div>
+                    <div class="task-progress"><div class="task-progress-complete" id="task-progress-week"></div></div>
+                </header>
+                <div class="todo-all-list" id="todo-list-week">
+
+                    <div class="todo-card"
+                         th:each="task : ${data.weekTask}"
+                         th:id="${task.id}"
+                         th:classappend="${task.status.name() == 'COMPLETED'} ? 'checked'">
+
+                        <!-- Checkbox -->
+                        <div class="check-box-div">
+                            <input type="checkbox"
+                                   th:attr="data-id=${task.id}"
+                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                        </div>
+
+                        <!-- Task Info -->
+                        <div class="todo-info-div">
+                            <p th:text="${task.title}"></p>
+                            <p th:text="${#temporals.format(task.dueDate, 'dd MMM yyyy HH:mm')}"></p>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="priority-div">
+                            <div class="priority"
+                                 th:classappend="${task.priority.name().toLowerCase()}">
+                                <p th:text="${task.priority.name()}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div class="delete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="todo-month todolist ">
+                <header>
+                    <div class="today-details">
+                        <div class="todo-icon"><i class="fa-regular fa-calendar"></i></div>
+                        <h3>This month</h3>
+                        <div class="todo-header-date"><p id="current-month"></p></div>
+                    </div>
+                    <div class="task-progress"><div class="task-progress-complete" id="task-progress-month"></div></div>
+                </header>
+
+                <div class="todo-all-list" id="todo-list-month">
+
+                    <div class="todo-card"
+                         th:each="task : ${data.monthTask}"
+                         th:id="${task.id}"
+                         th:classappend="${task.status.name() == 'COMPLETED'} ? 'checked'">
+
+                        <!-- Checkbox -->
+                        <div class="check-box-div">
+                            <input type="checkbox"
+                                   th:attr="data-id=${task.id}"
+                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                        </div>
+
+                        <!-- Task Info -->
+                        <div class="todo-info-div">
+                            <p th:text="${task.title}"></p>
+                            <p th:text="${#temporals.format(task.dueDate, 'dd MMM yyyy HH:mm')}"></p>
+                        </div>
+
+                        <!-- Priority -->
+                        <div class="priority-div">
+                            <div class="priority"
+                                 th:classappend="${task.priority.name().toLowerCase()}">
+                                <p th:text="${task.priority.name()}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <div class="delete">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        &copy; All rights are reserved by Puvith Kumar.
+    </footer>
+</main>
+</body>
+
+<script th:src="@{/js/todo-list.js}"></script>
+</html>
