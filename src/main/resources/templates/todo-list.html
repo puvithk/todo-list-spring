@@ -31,15 +31,15 @@
 
                 <!-- CATEGORY SELECT (TaskType) -->
                 <div class="time-filter">
-                    <div class="today-filter active category-btn" data-type="DAY">
+                    <div class="today-filter active category-btn" data-type="THIS_DAY">
                         <i class="fa-solid fa-calendar-day"></i>
                         <p>DAY</p>
                     </div>
-                    <div class="week-filter category-btn" data-type="WEEK">
+                    <div class="week-filter category-btn" data-type="THIS_WEEK">
                         <i class="fa-solid fa-calendar-week"></i>
-                        <p>THIS WEEK</p>
+                        <p>THIS WEEK</p>hh
                     </div>
-                    <div class="month-filter category-btn" data-type="MONTH">
+                    <div class="month-filter category-btn" data-type="THIS_MONTH">
                         <i class="fa-solid fa-calendar"></i>
                         <p>THIS MONTH</p>
                     </div>
@@ -306,6 +306,10 @@
                         </div>
 
                     </div>
+                    <div th:if="${#lists.isEmpty(data.todayTask)}">
+                        <span>No task Found</span>
+                    </div>
+
                 </div>
             </div>
             <div class="todo-week todolist">
@@ -352,6 +356,11 @@
                         </div>
 
                     </div>
+
+                    <div th:if="${#lists.isEmpty(data.weekTask)}">
+                        <span>No task Found</span>
+                    </div>
+
                 </div>
 
 
@@ -404,6 +413,10 @@
 
                     </div>
 
+
+                    <div th:if="${#lists.isEmpty(data.monthTask)}">
+                        <span>No task Found</span>
+                    </div>
                 </div>
             </div>
         </div>

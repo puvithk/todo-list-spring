@@ -35,9 +35,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean existsByEmail(String username) {
-        Users user = this.getUserById(username);
-        if(user ==  null){
-            return true;
+        try {
+            Users user = userDao.findUserByUsername(username);
+            if(user!=null){
+                return true;
+            }
+        }catch(Exception e){
+            return false;
         }
         return false;
     }

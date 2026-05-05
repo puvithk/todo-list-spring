@@ -40,11 +40,9 @@ public class AuthController {
 
     @PostMapping(value = "signup" , version = "1")
     public String signUp( Model model,SignUpDto signUpDto) {
-        try{
+
             authService.SignUp(signUpDto);
-        }catch (Exception e){
-            return "redirect:/taskmanager/v1/auth/login?signup=true&error=true";
-        }
+
 
         model.addAttribute("success" , true);
         return "redirect:/taskmanager/v1/auth/login?success=true";

@@ -25,7 +25,9 @@ public class AuthService {
                 signUpDto.getEmail(),
                 signUpDto.getFullName() ,
                 null ,
-                passwordEncoder.encode(signUpDto.getPassword()),
+                passwordEncoder.encode(
+                        signUpDto.getPassword()
+                ),
                null
 
         );
