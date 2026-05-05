@@ -84,4 +84,15 @@ public class TaskDaoImpl implements TaskDao {
         entityManager.persist(task);
         return task;
     }
+
+    @Override
+    public Task findById(Long id) {
+        return entityManager.find(Task.class , id);
+    }
+
+    @Override
+    @Transactional
+    public void save(Task task) {
+entityManager.persist(task);
+    }
 }

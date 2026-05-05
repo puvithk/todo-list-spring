@@ -27,4 +27,5 @@ public interface TaskService {
 
     TaskResponseDto createTask(TaskRequestDto taskRequestDto);
 
+    void updateStatus(Long id, boolean completed);
 }

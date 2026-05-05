@@ -15,4 +15,8 @@ public interface TaskDao {
     List<Task> findAllMonthTask(LocalDate startDate, LocalDate endDate,Users users);
 
     Task createTask(Task task, Users user);
+
+    Task findById(Long id);
+
+    void save(Task task);
 }

@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/todo-list.css}" >
     <link rel="icon"  th:href="@{/assests/NexTak.png}">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
@@ -177,7 +179,7 @@
                + ${data.progressData['monthProgress']} + '%, #e5e7eb 0%);'"
                 >
 
-                <p class="percentage-donut" id="month-precentage" th:text="${#numbers.formatDecimal(data.progressData['todayProgress'], 0, 0)}"></p></div>
+                <p class="percentage-donut" id="month-precentage" th:text="${#numbers.formatDecimal(data.progressData['monthProgress'], 0, 0)}"></p></div>
                 <div class="text-donut">
                     <div class="completed month"><p id="month-completed"></p><p>Completed</p></div>
                     <div class="pending" ><p id="month-pending"></p><p>Pending</p></div>
@@ -279,7 +281,9 @@
                         <div class="check-box-div">
                             <input type="checkbox"
                                    th:attr="data-id=${task.id}"
-                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                                   th:checked="${task.status.name() == 'COMPLETED'}"
+                                   onchange="updateTaskStatus(this)"
+                            />
                         </div>
 
                         <!-- Task Info -->
@@ -324,7 +328,8 @@
                         <div class="check-box-div">
                             <input type="checkbox"
                                    th:attr="data-id=${task.id}"
-                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                                   th:checked="${task.status.name() == 'COMPLETED'}"
+                                   onchange="updateTaskStatus(this)"/>
                         </div>
 
                         <!-- Task Info -->
@@ -372,7 +377,10 @@
                         <div class="check-box-div">
                             <input type="checkbox"
                                    th:attr="data-id=${task.id}"
-                                   th:checked="${task.status.name() == 'COMPLETED'}" />
+                                   th:checked="${task.status.name() == 'COMPLETED'}"
+                                   onchange="updateTaskStatus(this)"
+
+                            />
                         </div>
 
                         <!-- Task Info -->
@@ -407,4 +415,39 @@
 </body>
 
 <script th:src="@{/js/todo-list.js}"></script>
+
+<script>
+    function updateTaskStatus(checkbox) {
+        const taskId = checkbox.getAttribute("data-id");
+        const isChecked = checkbox.checked;
+
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch(`/taskmanager/v1/api/task/${taskId}/status?completed=${isChecked}`, {
+            method: "PUT",
+            headers: {
+                [csrfHeader]: csrfToken
+            }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("Failed");
+            return res.text();
+        })
+        .then(data => console.log(data)
+
+
+        )
+        .catch(err => {
+            console.error(err);
+            checkbox.checked = !isChecked;
+        });
+    location.reload();
+
+    }
+
+</script>
+
+
+
 </html>

@@ -1,5 +1,6 @@
 package com.taskmanager.task_manager.task.service.impl;
 
+import com.taskmanager.task_manager.exception.ResourceNotFound;
 import com.taskmanager.task_manager.task.dao.TaskDao;
 import com.taskmanager.task_manager.task.dto.TaskRequestDto;
 import com.taskmanager.task_manager.task.dto.TaskResponseDto;
@@ -143,6 +144,18 @@ public class TaskServiceImpl implements TaskService {
                 taskResult.getStatus(),
                 taskResult.getUsers().getUsername()
         );
+    }
+
+    @Override
+    public void updateStatus(Long id, boolean completed) {
+        Task task = taskDao.findById(id);
+        if(task==null){
+            throw new ResourceNotFound("Task Not found");
+        }
+
+        task.setStatus(completed ? Status.COMPLETED : Status.CREATED);
+
+        taskDao.save(task);
     }
 
     // helper function
