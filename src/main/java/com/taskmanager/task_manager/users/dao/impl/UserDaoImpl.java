@@ -25,4 +25,9 @@ public class UserDaoImpl implements UserDao {
         query.setParameter("username" , username);
         return query.getSingleResult();
     }
+
+    @Override
+    public void save(Users user) {
+        entityManager.persist(user);
+    }
 }

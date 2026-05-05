@@ -16,8 +16,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "users")
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    public Users(String username, String email, String fullname, String phone, String password, String profileUrl) {
+        this.username = username;
+        this.email = email;
+        this.fullname = fullname;
+        this.phone = phone;
+        this.password = password;
+        this.profileUrl = profileUrl;
+    }
+
     @Column(name = "username")
     private String username ;
     @Column(name = "email")

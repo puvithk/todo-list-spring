@@ -4,4 +4,6 @@ import com.taskmanager.task_manager.users.model.Users;
 
 public interface UserDao {
     Users findUserByUsername(String username);
+
+    void save(Users user);
 }

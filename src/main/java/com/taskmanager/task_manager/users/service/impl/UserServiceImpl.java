@@ -4,6 +4,7 @@ import com.taskmanager.task_manager.exception.ResourceNotFound;
 import com.taskmanager.task_manager.users.dao.UserDao;
 import com.taskmanager.task_manager.users.model.Users;
 import com.taskmanager.task_manager.users.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +25,20 @@ public class UserServiceImpl implements UserService {
             throw new ResourceNotFound("User not found");
         }
         return user;
+    }
+
+    @Override
+    @Transactional
+    public void createUser(Users user) {
+        userDao.save(user);
+    }
+
+    @Override
+    public boolean existsByEmail(String username) {
+        Users user = this.getUserById(username);
+        if(user ==  null){
+            return true;
+        }
+        return false;
     }
 }

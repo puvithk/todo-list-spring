@@ -33,13 +33,13 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity){
         // Permit all the static resources
         httpSecurity.authorizeHttpRequests(
-                configures -> configures.requestMatchers("/css/**" , "/js/**" , "/assests/**")
+                configures -> configures.requestMatchers("/css/**" , "/js/**"  , "/taskmanager/" + version+"/auth/**", "/assests/**")
                         .permitAll().anyRequest().authenticated() // Authenticating all the other resource
         ).formLogin( // Login form
                 form-> form
                         .loginPage("/taskmanager/"+version+"/auth/login") // Login form which it must direct
                         .loginProcessingUrl("/taskmanager/"+version+"/auth/loginprocess")
-                        .defaultSuccessUrl("/taskmanager/" + version + "/dashboard/", true)// redirecting is success full
+                        .defaultSuccessUrl("/taskmanager/" + version + "/dashboard/", true)// redirecting is success fulla
                         .permitAll()
         );
 
@@ -57,7 +57,7 @@ public class SecurityConfig {
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
 

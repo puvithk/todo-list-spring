@@ -32,6 +32,9 @@
                 <div class="error" th:if="${param.error}">
                     <span class="password-message">*Username or password is wrong</span>
                 </div>
+                <div th:if="${param.success}">
+                    <span class="password-message" style="color:black;">Signup successful! Please login.</span>
+                </div>
                 <button type="submit" class="login-button">Login</button>
             </form>
             <div class="forgot-password login-form" id="forgot-password">
@@ -63,8 +66,13 @@
                     <input type="email" th:field="*{email}" id="email-signup" name="email" placeholder="Email" required>
                 </div>
                 <div class="inputs">
-                    <input type="file" id="file-signup" th:field="*{profileImage}"  placeholder="Profile Image" accept="image/png, image/jpeg"  required>
-                    <p class="password-message" >*Only PNG and JPEG files</p>
+                    <input disabled type="file" id="file-signup" th:field="*{profileImage}"  placeholder="Profile Image" accept="image/png, image/jpeg"  required>
+                    <p class="password-message" >*Only PNG and JPEG files(Disabled)</p>
+                </div>
+                <div th:if="${param.signup} and ${param.error}">
+    <span class="password-message" style="color:red;">
+        Signup failed! Username already exists.
+    </span>
                 </div>
                 <button type="submit"  class="signup-button" >SIGN UP</button>
             </form>
@@ -88,4 +96,13 @@
 </main>
 </body>
 <script th:src="@{/js/script.js}"></script>
+<script id="sg1">
+    window.addEventListener("load", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        if (urlParams.get("signup") === "true") {
+            openSignUp(); // your existing function
+        }
+    });
+</script>
 </html>

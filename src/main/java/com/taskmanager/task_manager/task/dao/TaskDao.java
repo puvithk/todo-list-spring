@@ -1,6 +1,5 @@
 package com.taskmanager.task_manager.task.dao;
 
-import com.taskmanager.task_manager.task.dto.TaskResponseDto;
 import com.taskmanager.task_manager.task.model.Task;
 import com.taskmanager.task_manager.users.model.Users;
 

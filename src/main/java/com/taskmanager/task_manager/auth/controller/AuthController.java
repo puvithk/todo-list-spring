@@ -2,6 +2,10 @@ package com.taskmanager.task_manager.auth.controller;
 
 import com.taskmanager.task_manager.auth.dto.LoginDto;
 import com.taskmanager.task_manager.auth.dto.SignUpDto;
+import com.taskmanager.task_manager.auth.service.AuthService;
+import com.taskmanager.task_manager.users.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,25 +18,36 @@ import java.io.File;
 @Controller
 @RequestMapping("/taskmanager/{version}/auth/")
 public class AuthController {
+    private final AuthService authService;
+
+
+
+    @Autowired
+    AuthController(AuthService authService ){
+        this.authService = authService;
+
+    }
+
+
     @GetMapping(value = "login" , version = "1")
     public String login(Model model , LoginDto loginDto){
 
         model.addAttribute("loginDto", new LoginDto());
         model.addAttribute("signUpDto", new SignUpDto());
+        model.addAttribute("success" , false);
         return "index.html";
     }
 
     @PostMapping(value = "signup" , version = "1")
     public String signUp( Model model,SignUpDto signUpDto) {
-        model.addAttribute("loginDto", new LoginDto());
-        model.addAttribute("signUpDto", new SignUpDto());
-        MultipartFile file = signUpDto.getProfileImage();
+        try{
+            authService.SignUp(signUpDto);
+        }catch (Exception e){
+            return "redirect:/taskmanager/v1/auth/login?signup=true&error=true";
+        }
 
-        System.out.println("File name: " + file.getOriginalFilename());
-        System.out.println("File size: " + file.getSize());
-
-
-        return "redirect:/taskmanager/v1/";
+        model.addAttribute("success" , true);
+        return "redirect:/taskmanager/v1/auth/login?success=true";
     }
 
 }
