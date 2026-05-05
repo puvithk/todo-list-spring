@@ -16,68 +16,103 @@
 <main>
     <div class="create-task" id="create-task">
         <div class="overlay"></div>
+
         <div class="create-popup">
             <header>
                 <h3>Add new Task</h3>
-                <div class="close-button" id="close-button"><i class="fa-solid fa-xmark"></i></div>
+                <div class="close-button" id="close-button">
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
             </header>
+
             <div class="create-task-form">
+
+                <!-- CATEGORY SELECT (TaskType) -->
                 <div class="time-filter">
-                    <div class="today-filter active" id="today-catogory">
-                        <i class="fa-solid fa-calendar-day">
-                        </i><p>DAY</p></div>
-                    <div class="week-filter" id="week-catogory"><i class="fa-solid fa-calendar-week"></i><p>THIS WEEK</p></div>
-                    <div class="month-filter" id="month-catogory"><i class="fa-solid fa-calendar"></i><p>THIS MONTH</p></div>
+                    <div class="today-filter active category-btn" data-type="DAY">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <p>DAY</p>
+                    </div>
+                    <div class="week-filter category-btn" data-type="WEEK">
+                        <i class="fa-solid fa-calendar-week"></i>
+                        <p>THIS WEEK</p>
+                    </div>
+                    <div class="month-filter category-btn" data-type="MONTH">
+                        <i class="fa-solid fa-calendar"></i>
+                        <p>THIS MONTH</p>
+                    </div>
                 </div>
-                <form>
+
+                <!-- FORM START -->
+                <form th:action="@{/taskmanager/{version}/task/create(version=${version})}" th:object="${taskRequest}" method="post">
+
+                    <!-- hidden field for TaskType -->
+                    <input type="hidden" th:field="*{taskType}" id="taskType" value="DAY"/>
+
+                    <!-- TITLE -->
                     <div class="task-inputs">
-                        <label for="title">Title <span>*(Only 50 character)</span></label>
-                        <input type="text" placeholder="Enter the title of the Task " id="title" name="title" maxlength="50">
+                        <label>Title <span>*(Only 50 characters)</span></label>
+                        <input type="text" th:field="*{title}" maxlength="50" required>
                     </div>
+
+                    <!-- DESCRIPTION -->
                     <div class="task-inputs">
-                        <label for="description">Description <span>*</span></label>
-                        <textarea  rows="4" cols="50" placeholder="Describe the Task" id="description" , name="description"></textarea>
+                        <label>Description <span>*</span></label>
+                        <textarea rows="4" th:field="*{description}" required></textarea>
                     </div>
+
+                    <!-- ROW -->
                     <div class="task-row">
+
+                        <!-- PRIORITY -->
                         <div class="task-inputs">
-                            <label for="priority">Priority  <span>*</span></label>
-                            <select id="priority"  name="priority">
-                                <option><span class="indicator high"></span>HIGH</option>
-                                <option > <span  class="indicator medium"></span>MEDIUM</option>
-                                <option> <span  class="indicator low"></span>LOW</option>
+                            <label>Priority <span>*</span></label>
+                            <select th:field="*{priority}" required>
+                                <option value="HIGH">HIGH</option>
+                                <option value="MEDIUM">MEDIUM</option>
+                                <option value="LOW">LOW</option>
                             </select>
-
                         </div>
-                        <div class="task-inputs">
-                            <label for="due-date">Due Date <span>*</span></label>
-                            <input type="date" id="due-date"  name="due-date">
 
+                        <!-- DATETIME -->
+                        <div class="task-inputs">
+                            <label>Due Date & Time <span>*</span></label>
+                            <input type="datetime-local" th:field="*{dueDate}" required>
                         </div>
-                        <div class="task-inputs">
-                            <label for="time">Time <span>*</span></label>
-                            <input type="time" id="time" name="time">
 
+                        <!-- STATUS -->
+                        <div class="task-inputs">
+                            <label>Status <span>*</span></label>
+                            <select th:field="*{status}" required>
+                                <option value="CREATED">PENDING</option>
+                                <option value="STARTED">IN_PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                            </select>
                         </div>
 
                     </div>
+
+                    <span>* Please fill in all required fields.</span>
+
+                    <!-- BUTTONS -->
+                    <div class="create-buttons">
+                        <div>
+                            <button type="reset" class="reset-button btn btn-negative">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Reset
+                            </button>
+                        </div>
+
+                        <button type="submit" class="create-button btn">
+                            <i class="fa-solid fa-plus"></i> Add Task
+                        </button>
+                    </div>
+
                 </form>
-                <span>* Please fill in all required fields.</span>
-                <div class="create-buttons">
-                    <div>
-                        <button class="reset-button btn btn-negative" id="reset-button"><i class="fa-solid fa-arrow-rotate-left"></i>Reset</button>
-                        <button class="reset-button btn btn-negative" id="edit-button" disabled><i class="fa-solid fa-pen"></i>Edit</button>
-                    </div>
+                <!-- FORM END -->
 
-                    <button class="create-button btn"  id="popup-submit"><i class="fa-solid fa-plus"></i>Add Task</button>
-                </div>
             </div>
         </div>
-
-
     </div>
-
-
-
 
 
 
@@ -154,21 +189,21 @@
         </div>
 
 
-        <div class="calender-info">
-            <div class="calender-info-row-total">
-                <div class="total-task">
-                    <h3 id="total-task">50</h3>
-                </div>
-                <p>Total Task</p>
-            </div>
-            <div class="calender-info-row">
-                <div class="today-info"></div><p>Today</p>
-            </div>
-            <div class="calender-info-row">
-                <div class="selected-info"></div><p>Selected</p>
-            </div>
+<!--        <div class="calender-info">-->
+<!--            <div class="calender-info-row-total">-->
+<!--                <div class="total-task">-->
+<!--                    <h3 id="total-task">50</h3>-->
+<!--                </div>-->
+<!--                <p>Total Task</p>-->
+<!--            </div>-->
+<!--            <div class="calender-info-row">-->
+<!--                <div class="today-info"></div><p>Today</p>-->
+<!--            </div>-->
+<!--            <div class="calender-info-row">-->
+<!--                <div class="selected-info"></div><p>Selected</p>-->
+<!--            </div>-->
 
-        </div>
+<!--        </div>-->
 
 <!--        <div class="calendar">-->
 <!--            <header class="calendar-header">-->

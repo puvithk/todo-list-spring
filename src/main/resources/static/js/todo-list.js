@@ -6,9 +6,9 @@ const taskDescription = document.getElementById('description')
 const taskPriority = document.getElementById('priority')
 const taskDueDate = document.getElementById('due-date')
 const taskTime = document.getElementById('time')
-
+const taskPopUpElement  =  document.getElementById('create-task')
 const formData  =  [taskTitle , taskDescription , taskPriority , taskDueDate , taskTime]
-
+const closeButton = document.getElementById('close-button')
 const todayTaskContainer = document.getElementById('todo-list-today');
 const weekTaskContainer = document.getElementById('todo-list-week');
 const monthTaskContainer = document.getElementById('todo-list-month');
@@ -47,6 +47,23 @@ let todayTask = []
 let weekTask =[]
 let monthTask = []
 
+document.querySelectorAll(".category-btn").forEach(btn => {
+    btn.addEventListener("click", function () {
+
+        // remove active
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+
+        // add active
+        this.classList.add("active");
+
+        // set hidden value
+        document.getElementById("taskType").value = this.getAttribute("data-type");
+    });
+});
+
+
+
+
 // ===== WEEK CALC =====
 const getFullweekStartAndEnd = (date) => {
     const start = date.getDate() - date.getDay();
@@ -57,6 +74,19 @@ const getFullweekStartAndEnd = (date) => {
         endDate: new Date(date.getFullYear(), date.getMonth(), end)
     };
 };
+const openAddTaskPopUp = (category = 'today')=>{
+
+    taskPopUpElement.style.display = 'flex'
+    document.body.classList.add('no-scroll');
+
+}
+
+closeButton.addEventListener("click" ,  ()=>{
+    taskPopUpElement.style.display = 'none'
+    document.body.classList.remove('no-scroll');
+    editBtn.disabled = true
+
+})
 
 // ===== DIVIDE TASKS =====
 const getAllTaskAndDivide = () => {
@@ -202,16 +232,6 @@ const renderCalender = (date)=>{
     }
 }
 
-// ===== NAVIGATION =====
-previousButton.addEventListener('click', () => {
-    today = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-    refreshAll()
-})
-
-nextButton.addEventListener('click', () => {
-    today = new Date(today.getFullYear(), today.getMonth() + 1, 1)
-    refreshAll()
-})
 
 // ===== REFRESH =====
 const refreshAll = () => {
@@ -222,6 +242,7 @@ const refreshAll = () => {
     UpdateMonthTodo();
     UpdateProgress();
 }
+// Open the task popup
 
 // ===== INIT =====
 window.addEventListener("load", () => {

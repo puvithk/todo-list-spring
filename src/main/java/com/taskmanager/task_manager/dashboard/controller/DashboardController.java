@@ -3,6 +3,7 @@ package com.taskmanager.task_manager.dashboard.controller;
 import com.taskmanager.task_manager.dashboard.dto.DashBoardDto;
 import com.taskmanager.task_manager.dashboard.dto.DashBoardRequestDto;
 import com.taskmanager.task_manager.dashboard.service.DashBoardService;
+import com.taskmanager.task_manager.task.dto.TaskRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,7 @@ public class DashboardController {
 
 
         model.addAttribute("data" ,dashBoardDto);
+        model.addAttribute("taskRequest" , new TaskRequestDto());
         return "todo-list";
     }
 

@@ -1,16 +1,22 @@
 package com.taskmanager.task_manager.task.service.impl;
 
 import com.taskmanager.task_manager.task.dao.TaskDao;
+import com.taskmanager.task_manager.task.dto.TaskRequestDto;
 import com.taskmanager.task_manager.task.dto.TaskResponseDto;
 import com.taskmanager.task_manager.task.model.Task;
 import com.taskmanager.task_manager.task.model.enums.Status;
 import com.taskmanager.task_manager.task.service.TaskService;
 import com.taskmanager.task_manager.users.model.Users;
+
+import com.taskmanager.task_manager.users.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +24,12 @@ import java.util.Map;
 public class TaskServiceImpl implements TaskService {
     // Get the bean of task dao
     private final TaskDao taskDao;
+    // Get the user service
+    private final UserService userService;
     @Autowired
-    TaskServiceImpl(TaskDao taskDao){
+    TaskServiceImpl(TaskDao taskDao , UserService userService){
         this.taskDao = taskDao;
+        this.userService = userService;
     }
     @Override
     public Map<String, Double> getProgressData(LocalDate date, Users users) {
@@ -103,6 +112,39 @@ public class TaskServiceImpl implements TaskService {
                         task.getUsers().getUsername()
                 )).toList();
     }
+
+    @Override
+    public TaskResponseDto createTask(TaskRequestDto taskRequestDto) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication==null){
+            throw new com.taskmanager.task_manager.exception.Authentication("Loing and continue");
+        }
+        Users user = userService.getUserById(authentication.getName());
+        Task task =  new Task(
+                taskRequestDto.getTitle() ,
+                taskRequestDto.getDescription(),
+                taskRequestDto.getPriority(),
+                taskRequestDto.getDueDate(),
+                taskRequestDto.getStatus(),
+                taskRequestDto.getTaskType()
+
+        );
+        task.setCreatedAt(LocalDateTime.now());
+        task.setUpdatedAt(LocalDateTime.now());
+        Task taskResult =  taskDao.createTask(task , user);
+        return new TaskResponseDto(
+                taskResult.getId(),
+                taskResult.getTitle(),
+                taskResult.getDescription() ,
+                taskResult.getPriority(),
+                taskResult.getDueDate(),
+                taskResult.getCreatedAt() ,
+                taskResult.getUpdatedAt() ,
+                taskResult.getStatus(),
+                taskResult.getUsers().getUsername()
+        );
+    }
+
     // helper function
     private double calculateProgress(List<TaskResponseDto> tasks) {
         if (tasks == null || tasks.isEmpty()) return 0.0;

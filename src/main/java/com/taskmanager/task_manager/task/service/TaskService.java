@@ -1,5 +1,6 @@
 package com.taskmanager.task_manager.task.service;
 
+import com.taskmanager.task_manager.task.dto.TaskRequestDto;
 import com.taskmanager.task_manager.task.dto.TaskResponseDto;
 import com.taskmanager.task_manager.users.model.Users;
 
@@ -20,5 +21,10 @@ public interface TaskService {
 
     // Get the list of all the task of this month
     List<TaskResponseDto> getAllMonthTask(LocalDate date , Users users);
+
+
+    // Create a new task
+
+    TaskResponseDto createTask(TaskRequestDto taskRequestDto);
 
 }

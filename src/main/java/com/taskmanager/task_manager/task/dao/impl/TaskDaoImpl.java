@@ -1,11 +1,13 @@
 package com.taskmanager.task_manager.task.dao.impl;
 
 import com.taskmanager.task_manager.task.dao.TaskDao;
+import com.taskmanager.task_manager.task.dto.TaskResponseDto;
 import com.taskmanager.task_manager.task.model.Task;
 import com.taskmanager.task_manager.task.model.enums.TaskType;
 import com.taskmanager.task_manager.users.model.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -73,5 +75,13 @@ public class TaskDaoImpl implements TaskDao {
 
 
         return query.getResultList();
+    }
+
+    @Override
+    @Transactional
+    public Task createTask(Task task, Users user) {
+        task.setUsers(user);
+        entityManager.persist(task);
+        return task;
     }
 }

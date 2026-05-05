@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @Table(name ="tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
 
@@ -50,5 +51,20 @@ public class Task {
     @JoinColumn(name = "users")
     @ManyToOne
     private Users users;
+
+    public Task(String title ,
+                String description ,
+                Priority priority ,
+                LocalDateTime dueDate ,
+                Status status ,
+                TaskType taskType){
+        this.title =  title;
+        this.description = description;
+        this.priority = priority;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.taskType = taskType;
+
+    }
 
 }
